@@ -1,0 +1,243 @@
+<!DOCTYPE HTML> 
+<html lang="en"> 
+<head>
+<title>Hello Terrain </title>
+<meta charset="utf-8"> 
+</head>
+    
+<script id="shader-blinn-phong-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexNormal;
+    attribute vec3 aVertexPosition;
+   
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+    
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+    
+    varying vec3 aVertexPos;
+
+    void main(void) {
+        // Get the vertex position in eye coordinates
+        vec4 vertexPositionEye4 = uMVMatrix * vec4(aVertexPosition, 1.0);
+        vPosition = vertexPositionEye4.xyz / vertexPositionEye4.w;
+
+        // Transform the normal (n) to eye coordinates
+        vNormal = normalize(uNMatrix * aVertexNormal);                
+
+        gl_Position = uPMatrix*uMVMatrix*vec4(aVertexPosition, 1.0);
+        
+        aVertexPos = aVertexPosition;
+    }
+</script>
+  
+<script id="shader-blinn-phong-fs-fog" type="x-shader/x-fragment">
+    //Script used to set up fragment shader with fog
+
+    precision mediump float;
+    
+    varying vec3 aVertexPos;
+    
+    uniform vec3 uLightPosition;
+    uniform vec3 uAmbientLightColor;
+    uniform vec3 uDiffuseLightColor;
+    uniform vec3 uSpecularLightColor;
+    uniform vec3 uAmbientMaterialColor;
+    uniform vec3 uDiffuseMaterialColor;
+    uniform vec3 uSpecularMaterialColor;
+    uniform float uShininess;
+    
+    //passed in from the vertex shader  
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main(void) {
+    
+        //TODO: Possibily have this in the vertex shader?
+        //Replaced the uKDiffuse with temp_color
+        //temp_color is based on the z vertex position (height) to create a elevation-based colormap
+        vec3 temp_color;
+        float height = aVertexPos[2];
+        if (height >= 0.0 && height < 0.5) {
+            temp_color = vec3(11.0/255.0,83.0/255.0,198.0/255.0);
+        }
+        else if (height >= 0.5 && height < 0.6) {
+            temp_color = vec3(198.0/255.0,111.0/255.0,11.0/255.0);
+        }
+        else if (height >= 0.6 && height < 0.7) {
+            temp_color = vec3(21.0/150.0,150.0/255.0,66.0/255.0);
+        }
+        else if (height >= 0.7 && height < 0.95) {
+            temp_color = vec3(165.0/255.0,67.0/255.0,48.0/255.0);
+        }
+        else {
+            temp_color = vec3(255.0/255.0,255.0/255.0,255.0/255.0);
+        }
+        
+        //normalize the normal . . .
+        vec3 uvNormal = normalize(vNormal);
+    
+        // Calculate the vector (l) to the light source
+        vec3 vectorToLightSource = normalize(uLightPosition - vPosition);
+
+        // Calculate n dot l for diffuse lighting
+        float diffuseLightWeightning = max(dot(uvNormal, 
+                                        vectorToLightSource), 0.0);
+
+        // Calculate the reflection vector (r) that is needed for specular light
+        vec3 reflectionVector = normalize(reflect(-vectorToLightSource, 
+                                                 uvNormal));
+
+        // The camera in eye coordinates is located in the origin and is pointing
+        // along the negative z-axis. Calculate viewVector (v) 
+        // in eye coordinates as:
+        // (0.0, 0.0, 0.0) - vertexPositionEye3
+        vec3 viewVectorEye = -normalize(vPosition);
+
+        //Use the Blinn-Phong Reflection Model
+        //Calculate the halfway vector
+        vec3 halfwayVector = viewVectorEye + vectorToLightSource;
+        halfwayVector = normalize(halfwayVector);
+
+        //Use the halfway vector and normal vector to calculate the specular light weight
+        //This is n dot h
+        float ndoth = max(dot(uvNormal, halfwayVector), 0.0);
+        float specularLightWeightning = pow(ndoth, uShininess);
+
+        // Sum up all three reflection components and send to the fragment shader
+        vec4 fColor = vec4(((uAmbientLightColor*uAmbientMaterialColor)
+                    + (uDiffuseLightColor*temp_color) * diffuseLightWeightning
+                    + (uSpecularLightColor*uSpecularMaterialColor) * specularLightWeightning),1.0);
+
+        float fogCoord = (gl_FragCoord.z/gl_FragCoord.w);
+        const float LOG2 = 1.442695;
+        float fogDensity = 0.2;
+        float fogFactor = exp2( -fogDensity * fogDensity * fogCoord * fogCoord * LOG2 ); 
+        fogFactor = clamp(fogFactor, 0.0, 1.0);
+        
+        vec4 fogColor = vec4(1.0, 1.0, 1.0, 1.0);
+        //vec4 fogColor = vec4(uAmbientLightColor + temp_color * uDiffuseLightColor + specularLightWeightning * uSpecularLightColor, 1.0);
+
+        gl_FragColor = mix(fogColor, fColor, fogFactor);
+        
+        //gl_FragColor = fColor;
+   }
+</script>
+    
+<script id="shader-blinn-phong-fs" type="x-shader/x-fragment">
+    //Script used to set up fragment shader without fog
+    
+    precision mediump float;
+    
+    varying vec3 aVertexPos;
+    
+    uniform vec3 uLightPosition;
+    uniform vec3 uAmbientLightColor;
+    uniform vec3 uDiffuseLightColor;
+    uniform vec3 uSpecularLightColor;
+    uniform vec3 uAmbientMaterialColor;
+    uniform vec3 uDiffuseMaterialColor;
+    uniform vec3 uSpecularMaterialColor;
+    uniform float uShininess;
+    
+    //passed in from the vertex shader  
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main(void) {
+    
+        //TODO: Possibily have this in the vertex shader?
+        //Replaced the uKDiffuse with temp_color
+        //temp_color is based on the z vertex position (height) to create a elevation-based colormap
+        vec3 temp_color;
+        float height = aVertexPos[2];
+        if (height >= 0.0 && height < 0.5) {
+            temp_color = vec3(11.0/255.0,83.0/255.0,198.0/255.0);
+        }
+        else if (height >= 0.5 && height < 0.6) {
+            temp_color = vec3(198.0/255.0,111.0/255.0,11.0/255.0);
+        }
+        else if (height >= 0.6 && height < 0.7) {
+            temp_color = vec3(21.0/150.0,150.0/255.0,66.0/255.0);
+        }
+        else if (height >= 0.7 && height < 0.95) {
+            temp_color = vec3(165.0/255.0,67.0/255.0,48.0/255.0);
+        }
+        else {
+            temp_color = vec3(255.0/255.0,255.0/255.0,255.0/255.0);
+        }
+        
+        //normalize the normal . . .
+        vec3 uvNormal = normalize(vNormal);
+    
+        // Calculate the vector (l) to the light source
+        vec3 vectorToLightSource = normalize(uLightPosition - vPosition);
+
+        // Calculate n dot l for diffuse lighting
+        float diffuseLightWeightning = max(dot(uvNormal, 
+                                        vectorToLightSource), 0.0);
+
+        // Calculate the reflection vector (r) that is needed for specular light
+        vec3 reflectionVector = normalize(reflect(-vectorToLightSource, 
+                                                 uvNormal));
+
+        // The camera in eye coordinates is located in the origin and is pointing
+        // along the negative z-axis. Calculate viewVector (v) 
+        // in eye coordinates as:
+        // (0.0, 0.0, 0.0) - vertexPositionEye3
+        vec3 viewVectorEye = -normalize(vPosition);
+
+        //Use the Blinn-Phong Reflection Model
+        //Calculate the halfway vector
+        vec3 halfwayVector = viewVectorEye + vectorToLightSource;
+        halfwayVector = normalize(halfwayVector);
+
+        //Use the halfway vector and normal vector to calculate the specular light weight
+        //This is n dot h
+        float ndoth = max(dot(uvNormal, halfwayVector), 0.0);
+        float specularLightWeightning = pow(ndoth, uShininess);
+
+        // Sum up all three reflection components and send to the fragment shader
+        vec4 fColor = vec4(((uAmbientLightColor*uAmbientMaterialColor)
+                    + (uDiffuseLightColor*temp_color) * diffuseLightWeightning
+                    + (uSpecularLightColor*uSpecularMaterialColor) * specularLightWeightning),1.0);
+
+        gl_FragColor = fColor;
+   }
+</script>
+
+<script src="gl-matrix-min.js"></script> 
+<script src="webgl-utils.js"></script> 
+<script src="Terrain.js"></script>  
+<script src="HelloTerrain.js"></script>   
+<body onload="startup();">
+ <canvas id="myGLCanvas" width="800" height="800"></canvas>
+    <form id="input_form">
+        <fieldset>
+            <legend>Rendering Parameters for TERRAIN</legend>
+         <input type="radio" name="primitive" id="wireframe" value="wireframe"> Wireframe
+         <input type="radio" name="primitive" id="polygon" id="polygon" value="polygon"> Polygon
+         <input type="radio" name="primitive" id="wirepoly" value="wirepoly" checked> Polygon with Edges
+        </fieldset>
+        <fieldset>
+            <legend>Rendering Parameters for FOG</legend>
+            <input type="checkbox" name="fogCheckbox" id="fog" value="Fog" checked> Fog
+        </fieldset>
+        <fieldset>
+            <legend>Control Parameters for PLANE</legend>
+            <div id="Controls">
+                <li> Arrow Key Left -- Plane rolls to LEFT</li>
+                <li> Arrow Key Right -- Plane rolls to RIGHT</li>
+                <li> Arrow Key Up -- Plane pitches DOWN</li>
+                <li> Arrow Key Down -- Plane pitches UP</li>
+                <li> Plus (+) Key -- Increase plane's SPEED</li>
+                <li> Minus (-) Key -- Decrease plane's SPEED</li>
+                <li> (R) Key -- Reset view</li>
+                <li> (T) Key -- Create new terrain</li>
+            </div>
+        </fieldset>
+        </form>
+</body>
+
+</html>

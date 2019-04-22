@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>MP4</title>
+<meta charset="utf-8">
+</head>
+
+<script id="shader-blinn-phong-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexNormal;
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+
+    void main(void) {
+        // Get the vertex position in eye coordinates
+        vec4 vertexPositionEye4 = uMVMatrix * vec4(aVertexPosition, 1.0);
+        vPosition = vertexPositionEye4.xyz / vertexPositionEye4.w;
+
+        // Transform the normal (n) to eye coordinates
+        vNormal = normalize(uNMatrix * aVertexNormal);
+
+        gl_Position = uPMatrix*uMVMatrix*vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+<script id="shader-blinn-phong-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    uniform vec3 uLightPosition;
+    uniform vec3 uAmbientLightColor;
+    uniform vec3 uDiffuseLightColor;
+    uniform vec3 uSpecularLightColor;
+    uniform vec3 uKAmbient;
+    uniform vec3 uKDiffuse;
+    uniform vec3 uKSpecular;
+    uniform float uShininess;
+
+    //passed in from the vertex shader
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+
+    void main(void) {
+        //normalize the normal . . .
+        vec3 uvNormal = normalize(vNormal);
+
+        // Calculate the vector (l) to the light source
+        vec3 vectorToLightSource = normalize(uLightPosition - vPosition);
+
+        // Calculate n dot l for diffuse lighting
+        float diffuseLightWeightning = max(dot(uvNormal,
+                                        vectorToLightSource), 0.0);
+
+        // Calculate the reflection vector (r) that is needed for specular light
+        vec3 reflectionVector = normalize(reflect(-vectorToLightSource,
+                                                 uvNormal));
+
+        // The camera in eye coordinates is located in the origin and is pointing
+        // along the negative z-axis. Calculate viewVector (v)
+        // in eye coordinates as:
+        // (0.0, 0.0, 0.0) - vertexPositionEye3
+        vec3 viewVectorEye = -normalize(vPosition);
+
+        //Use the Blinn-Phong Reflection Model
+        //Calculate the halfway vector
+        vec3 halfwayVector = viewVectorEye + vectorToLightSource;
+        halfwayVector = normalize(halfwayVector);
+
+        //Use the halfway vector and normal vector to calculate the specular light weight
+        //This is n dot h
+        float ndoth = max(dot(uvNormal, halfwayVector), 0.0);
+        float specularLightWeightning = pow(ndoth, uShininess);
+
+        // Sum up all three reflection components and send to the fragment shader
+        vec4 fColor = vec4(((uAmbientLightColor*uKAmbient)
+                    + (uDiffuseLightColor*uKDiffuse) * diffuseLightWeightning
+                    + (uSpecularLightColor*uKSpecular) * specularLightWeightning),1.0);
+
+        gl_FragColor = fColor;
+   }
+</script>
+
+<script id="cube-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexNormal;
+    attribute vec3 aVertexPosition;
+    attribute vec2 aTexCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    varying vec3 vPosition;
+    varying vec3 vNormal;
+
+    varying vec4 vVectorPosition;
+
+    void main(void) {
+        // Get the vertex position in eye coordinates
+        vec4 vertexPositionEye4 = uMVMatrix * vec4(aVertexPosition, 1.0);
+        vPosition = vertexPositionEye4.xyz / vertexPositionEye4.w;
+
+        vVectorPosition = vec4(aVertexPosition,1.0);
+
+        // Transform the normal (n) to eye coordinates
+        vNormal = normalize(uNMatrix * aVertexNormal);
+
+        gl_Position = uPMatrix*uMVMatrix*vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+<script id="cube-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    // Passed in from the vertex shader.
+    varying vec3 vNormal;
+    varying vec4 vVectorPosition;
+
+    // The texture.
+    uniform samplerCube uSampler;
+
+    void main() {
+       vec4 color = textureCube(uSampler, normalize(vVectorPosition).xyz);
+       gl_FragColor = vec4(color.xyz,1.0);
+    }
+</script>
+
+<script src="gl-matrix-min.js"></script>
+<script src="webgl-utils.js"></script>
+<script src="CubeMesh.js"></script>
+<script src="SphereMesh.js"></script>
+<script src="HelloParticles.js"></script>
+<body onload="startup();">
+ MP4 -- A Simple Particle System -- danasim2<br>
+ <canvas id="myGLCanvas" width="800" height="800"></canvas>
+    <form id="input_form">
+        <fieldset>
+            <legend>Rendering Parameters for Background</legend>
+         <input type="radio" name="skybox" id="blank" value="blank" checked> Blank
+         <input type="radio" name="skybox" id="mountain" value="mountain"> Mountain
+         <input type="radio" name="skybox" id="beach" value="beach"> Beach
+         <input type="radio" name="skybox" id="city" value="city" > City
+        </fieldset>
+        <fieldset>
+            <legend>Particle Options</legend>
+            --Press "r" to reset to original parameters<br><br>
+            <input type="number" name="sphereCount" id="sphereCount" value="10"/> Number of Particles <br>
+            -- Press "p" to add more! Press "o" to remove.<br>
+            -- Click "t" to reset to 10 particles<br><br>
+            <input type="number" name="drag" id="drag" value="1"/> Drag Value <br>
+            -- Press "l" to decrease drag. Press "k" to increase.<br><br>
+            <input id="random-color" type="checkbox" checked> Particles are random colors.<br>
+            Or set a uniform color: <input id="mat-color" type="color" value="#ffffff">
+            
+        </fieldset>
+        </form>
+</body>
+
+</html>

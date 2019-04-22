@@ -1,41 +1,140 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Dana's Home Site</title>
-	</head>
-	<body>
-		<div class="container">
-    		<div class="blurb">
-        		<h1>Dana Sim's Home Site</h1>
-				<p>Student at <em>University of Illinois at Urbana-Champaign</em> majoring in <b>Engineering Physics</b>, marathon runner, and Pokémon Master.</p>
-    			
-			<img src="Me and Oysters 2.jpg" style="width:160px;height:240px;">
-			
-		</div><!-- /.blurb -->
-		</div><!-- /.container -->
-		
-		<br>
-		
-		<div class="blurb">
-			<p>Videogames made with <em>Unity Game Engine</em> through tutorials and polished with custom tweaks.</p>
-			<footer>
-			<ul>
-				<li><a href="https://vixro.github.io/Roll-a-Ball-Web-2/">Roll-a-Ball</a></li>
-				<li><a href="https://vixro.github.io/Space-Shooter-Web-1/">Space Shooter</a></li>
-				<li><a href="https://vixro.github.io/Tanks-Web-1/">Tanks!</a></li>
-			</ul>
-			</footer>
-    		</div><!-- /.blurb -->
-		
-		
-		<br>
-		<p><a href="https://drive.google.com/file/d/1dv9sUqTpdKtURsV-XzI0TDl3RbOgVoyw/view?usp=sharing"> My resume</a>. 
-				You can contact me by <a href="mailto:danasim2@illinois.edu">email</a> or by phone at 847-840-1401.</p>
-	
-		<hr>
-		
-		<footer>
-			<p>&copy;Dana Sim 2017</p>
-		</footer>
-	</body>
+<head>
+<style>
+body {
+  margin: 0;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e7e7e7;
+  background-color: #f3f3f3;
+}
+
+lis {
+  float: left;
+}
+
+lis a {
+  display: block;
+  color: #666;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+lis a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+lis a.active {
+  color: white;
+  background-color: #4CAF50;
+}
+
+lis a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+    
+lis.dropdown {
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+    
+    
+</style>
+</head>
+<body>
+
+<ul>
+  <!--<lis><a class="active" href="#home">Home</a></lis>-->
+  <lis class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Unity Games</a>
+    <div class="dropdown-content">
+      <a href="https://vixro.github.io/Roll-a-Ball-Web-2/" target="_blank">Roll-a-Ball</a>
+      <a href="https://vixro.github.io/Space-Shooter-Web-1/" target="_blank">Space Shooter</a>
+      <a href="https://vixro.github.io/Tanks-Web-1/" target="_blank">Tanks!</a>
+    </div>
+  </lis>
+  <lis class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Interactive Graphics</a>
+    <div class="dropdown-content">
+      <a href="Animation/MP1.html"  target="_blank">Simple Animation</a>
+      <a href="Flight/mp2.html" target="_blank">Simple Terrain and Flight</a>
+      <a href="Environment/mp3.html" target="_blank">Simple Environment Mapping</a>
+      <a href="Particles/mp4.html" target="_blank">Simple Particles</a>
+    </div>
+  </lis>
+  <lis class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Physics Projects</a>
+    <div class="dropdown-content">
+      <a href="#">Condensed Matter <i>-- coming soon</i></a>
+      <a href="#">Neural Networking <i>-- coming soon</i></a>
+      <a href="#">Statistic Mechanics <i>-- coming soon</i></a>
+    </div>
+  </lis>
+  <lis class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Other</a>
+    <div class="dropdown-content">
+      <a href="#">Images and Datastructures <i>-- coming soon</i></a>
+      <a href="#">Maze Solving <i>-- coming soon</i></a>
+    </div>
+  </lis>
+</ul>
+
+<div style="margin-left:2%;height:1000px;width:1000px">
+    <div class="container">
+        <div class="blurb">
+            <h1>Dana Song Sim</h1>
+            <p>Student at <em>University of Illinois at Urbana-Champaign</em> majoring in <b>Engineering Physics</b>, marathon runner, and Pokémon Master.</p>
+    </div><!-- /.blurb -->
+    </div><!-- /.container -->
+
+    <div style="margin-left:2%;height:300px;">
+    <img src="profile.jpg" style="margin-right:1%;padding:1px;width:200px;height:280px;" align="left">
+
+    <br>
+    Please click the above tabs to see examples of my work! <br><br>
+        • Unity Games made with <em>Unity Game Engine</em> using tutorials and polished with custom tweaks. <br>
+        • Interactive graphic projects from CS418 class at the University of Illinois at Urbana-Champaign. <br>
+        • Physics projects and more <i>coming soon</i>!
+    <br>
+    <p><a href="https://drive.google.com/file/d/1dv9sUqTpdKtURsV-XzI0TDl3RbOgVoyw/view?usp=sharing"> My resume</a>. 
+            You can contact me at <a href="mailto:danasim2@illinois.edu">danasim2@illinois.edu</a> or by phone at 847-840-1401.</p>
+    </div>
+    <hr>
+    
+    <footer>
+        <p>&copy;Dana Sim 2019</p>
+    </footer>
+</div>
+
+</body>
 </html>
