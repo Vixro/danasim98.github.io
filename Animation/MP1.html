@@ -1,10 +1,10 @@
-<!DOCTYPE HTML> 
-<html lang="en"> 
+<!DOCTYPE HTML>
+<html lang="en">
 <head>
-<title>MP1 - danasim2</title>
-<meta charset="utf-8"> 
+<title>Simple Animation</title>
+<meta charset="utf-8">
 </head>
- 
+
 <script id="shader-vs" type="x-shader/x-vertex">
 attribute vec4 aVertexColor;
 attribute vec3 aVertexPosition;
@@ -15,7 +15,7 @@ void main(void) {
     vColor = aVertexColor;
 }
 </script>
-  
+
 <script id="shader-fs" type="x-shader/x-fragment">
 precision mediump float;
 varying vec4 vColor;
@@ -24,26 +24,27 @@ void main(void) {
  }
 </script>
 
-<script src="gl-matrix-min.js"></script> 
+<script src="gl-matrix-min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
-<script src="MP1.js"></script> 
-    
+<script src="MP1.js"></script>
+
 
 <body onload="startup();">
   <p>CS 418 MP1 - Dana Sim @ danasim2@illinois.edu</p>
-    
+  <p>Select an option from below.</p>
+
   <input type="radio" id = "staticI" name="opt" value="staticI" > Static "I"<br>
   <input type="radio" id = "animatedI" name="opt" value="animatedI" > Animated "I"<br>
   <input type="radio" id = "staticKH" name="opt" value="staticKH"> Static Special<br>
   <input type="radio" id = "animatedKH" name="opt" value="aimatedKH"> Animated Special<br><br>
-    
+
   <canvas id="myGLCanvas" width="500" height="500"></canvas> <br>
 
-  <p>Static "I" - Still image of the fighting I logo.</p>
-  <p>Animated "I" - Animation of the fighting I logo. This includes a rotation about the x-axis, a scaling factor, and the "I" dances like a sine curve. </p>
-  <p>Static Special - Still image of the "Kingdom Hearts" crown.</p>
-  <p>Animated Special - Animation of the "Kingdom Hearts" crown. This includes a rotation about the Y axis, directly changing the color of the vertices, and a background color change.</p>
-    
+    <p><b>Static "I"</b> - Still image of the fighting I logo.</p>
+  <p><b>Animated "I"</b> - Animation of the fighting I logo. This includes a rotation about the x-axis, a scaling factor, and the "I" dances like a sine curve. </p>
+    <p><b>Static Special</b> - Still image of the "Kingdom Hearts" crown.</p>
+    <p><b>Animated Special</b> - Animation of the "Kingdom Hearts" crown. This includes a rotation about the Y axis, directly changing the color of the vertices, and a background color change.</p>
+
 </body>
 
 </html>
