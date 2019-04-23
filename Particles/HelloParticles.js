@@ -94,36 +94,36 @@ var cubeLoaded = 0; //keep track of how many textures were loaded
 
 //Different skyboxes to use
 var city = [
-    'images/city/pos-x.jpg',
-    'images/city/neg-x.jpg',
-    'images/city/pos-y.jpg',
-    'images/city/neg-y.jpg',
-    'images/city/pos-z.jpg',
-    'images/city/neg-z.jpg'
+    'Images/city/pos-x.jpg',
+    'Images/city/neg-x.jpg',
+    'Images/city/pos-y.jpg',
+    'Images/city/neg-y.jpg',
+    'Images/city/pos-z.jpg',
+    'Images/city/neg-z.jpg'
 ];
 var mountain = [
-    'images/mountain/pos-x.jpg',
-    'images/mountain/neg-x.jpg',
-    'images/mountain/pos-y.jpg',
-    'images/mountain/neg-y.jpg',
-    'images/mountain/pos-z.jpg',
-    'images/mountain/neg-z.jpg'
+    'Images/mountain/pos-x.jpg',
+    'Images/mountain/neg-x.jpg',
+    'Images/mountain/pos-y.jpg',
+    'Images/mountain/neg-y.jpg',
+    'Images/mountain/pos-z.jpg',
+    'Images/mountain/neg-z.jpg'
 ];
 var beach = [
-    'images/beach/pos-x.jpg',
-    'images/beach/neg-x.jpg',
-    'images/beach/pos-y.jpg',
-    'images/beach/neg-y.jpg',
-    'images/beach/pos-z.jpg',
-    'images/beach/neg-z.jpg'
+    'Images/beach/pos-x.jpg',
+    'Images/beach/neg-x.jpg',
+    'Images/beach/pos-y.jpg',
+    'Images/beach/neg-y.jpg',
+    'Images/beach/pos-z.jpg',
+    'Images/beach/neg-z.jpg'
 ];
 var nullMap = [
-    'images/blank/pos-x.jpg',
-    'images/blank/neg-x.jpg',
-    'images/blank/pos-y.jpg',
-    'images/blank/neg-y.jpg',
-    'images/blank/pos-z.jpg',
-    'images/blank/neg-z.jpg'
+    'Images/blank/pos-x.jpg',
+    'Images/blank/neg-x.jpg',
+    'Images/blank/pos-y.jpg',
+    'Images/blank/neg-y.jpg',
+    'Images/blank/pos-z.jpg',
+    'Images/blank/neg-z.jpg'
 ];
 var currentMap = nullMap;
 
