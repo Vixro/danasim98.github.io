@@ -697,7 +697,7 @@ function handleKeyUp(event) {
     setupShadersCube();
     setupShadersTeapotNR();
     setupShadersTeapotR();
-    setupMesh("images/teapot_0.obj");
+    setupMesh("Images/teapot_0.obj");
     tick();
 }
 
