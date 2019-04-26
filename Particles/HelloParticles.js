@@ -1,7 +1,7 @@
 
 /**
- * @file A WebGL program rendering a simple particle system 
- * @author Eric Shaffer and Dana Sim 
+ * @file A WebGL program rendering a simple particle system
+ * @author Eric Shaffer and Dana Sim
  */
 
 /** @global The WebGL context */
@@ -31,12 +31,12 @@ var nMatrix = mat3.create();
 var mvMatrixStack = [];
 
 /** @global Objects holding the geometry for 3D meshes */
-var myCube;     
+var myCube;
 var numSpheres = 10;
 var mySpheres = new Array(numSpheres);
 
 /** @global Parameters for invisible "box" particles are within */
-var boxSize = 20; 
+var boxSize = 20;
 
 // Euler Integration and Forces parameters
 var gravity = 10;
@@ -140,7 +140,7 @@ function uploadModelViewMatrixToShader() {
  * Sends projection matrix to shader
  */
 function uploadProjectionMatrixToShader() {
-  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, 
+  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform,
                       false, pMatrix);
 }
 
@@ -245,13 +245,13 @@ function createGLContext(canvas) {
  */
 function loadShaderFromDOM(id) {
   var shaderScript = document.getElementById(id);
-  
+
   // If we don't find an element with the specified id
-  // we do an early exit 
+  // we do an early exit
   if (!shaderScript) {
     return null;
   }
-  
+
   // Loop through the children for the found DOM element and
   // build up the shader source code as a string
   var shaderSource = "";
@@ -262,7 +262,7 @@ function loadShaderFromDOM(id) {
     }
     currentChild = currentChild.nextSibling;
   }
- 
+
   var shader;
   if (shaderScript.type == "x-shader/x-fragment") {
     shader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -271,14 +271,14 @@ function loadShaderFromDOM(id) {
   } else {
     return null;
   }
- 
+
   gl.shaderSource(shader, shaderSource);
   gl.compileShader(shader);
- 
+
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     alert(gl.getShaderInfoLog(shader));
     return null;
-  } 
+  }
   return shader;
 }
 
@@ -289,7 +289,7 @@ function loadShaderFromDOM(id) {
 function setupShadersPhong() {
   vertexShader = loadShaderFromDOM("shader-blinn-phong-vs");
   fragmentShader = loadShaderFromDOM("shader-blinn-phong-fs");
-  
+
   shaderProgramPhong = gl.createProgram();
   gl.attachShader(shaderProgramPhong, vertexShader);
   gl.attachShader(shaderProgramPhong, fragmentShader);
@@ -311,12 +311,12 @@ function setupShadersPhong() {
   shaderProgramPhong.pMatrixUniform = gl.getUniformLocation(shaderProgramPhong, "uPMatrix");
   shaderProgramPhong.nMatrixUniform = gl.getUniformLocation(shaderProgramPhong, "uNMatrix");
 
-  shaderProgramPhong.uniformLightPositionLoc = gl.getUniformLocation(shaderProgramPhong, "uLightPosition");  
-  shaderProgramPhong.uniformAmbientLightColorLoc = gl.getUniformLocation(shaderProgramPhong, "uAmbientLightColor");  
+  shaderProgramPhong.uniformLightPositionLoc = gl.getUniformLocation(shaderProgramPhong, "uLightPosition");
+  shaderProgramPhong.uniformAmbientLightColorLoc = gl.getUniformLocation(shaderProgramPhong, "uAmbientLightColor");
   shaderProgramPhong.uniformDiffuseLightColorLoc = gl.getUniformLocation(shaderProgramPhong, "uDiffuseLightColor");
   shaderProgramPhong.uniformSpecularLightColorLoc = gl.getUniformLocation(shaderProgramPhong, "uSpecularLightColor");
-  shaderProgramPhong.uniformShininessLoc = gl.getUniformLocation(shaderProgramPhong, "uShininess");    
-  shaderProgramPhong.uniformAmbientMaterialColorLoc = gl.getUniformLocation(shaderProgramPhong, "uKAmbient");  
+  shaderProgramPhong.uniformShininessLoc = gl.getUniformLocation(shaderProgramPhong, "uShininess");
+  shaderProgramPhong.uniformAmbientMaterialColorLoc = gl.getUniformLocation(shaderProgramPhong, "uKAmbient");
   shaderProgramPhong.uniformDiffuseMaterialColorLoc = gl.getUniformLocation(shaderProgramPhong, "uKDiffuse");
   shaderProgramPhong.uniformSpecularMaterialColorLoc = gl.getUniformLocation(shaderProgramPhong, "uKSpecular");
 }
@@ -384,14 +384,14 @@ function setLightUniforms(loc,a,d,s) {
 function setupTextures(img) {
     //console.log("Setting up textures of ", currentMap);
     var targets = [
-        gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z 
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
     ];
     //if (img[0] != null) {
     for (var j = 0; j < 6; j++) {
         cubeImage[j] = new Image();
-        cubeImage[j].onload = function() { 
+        cubeImage[j].onload = function() {
             cubeLoaded++;
             if (cubeLoaded == 6) {
                 cubeTexture = gl.createTexture();
@@ -399,7 +399,7 @@ function setupTextures(img) {
                 for (var i = 0; i < 6; i++) {
                     handleTextureLoaded(cubeImage[i], cubeTexture, targets[i]);
                 }
-            } 
+            }
         }
         cubeImage[j].src = img[j];
     };
@@ -426,7 +426,7 @@ function handleTextureLoaded(image, texture, target) {
      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
      //console.log("Loaded non-power of 2 texture");
   }
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR); 
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 }
 
 //----------------------------------------------------------------------------------
@@ -459,18 +459,18 @@ function setupSphere() {
 function draw() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    
-    // We'll use perspective 
-    mat4.perspective(pMatrix,degToRad(45), 
+
+    // We'll use perspective
+    mat4.perspective(pMatrix,degToRad(45),
                      gl.viewportWidth / gl.viewportHeight,
                      0.1, 500.0);
-    
+
     // We want to look down -z, so create a lookat point in that direction
     vec3.add(viewPt, eyePt, viewDir);
-    
+
     // Then generate the lookat matrix and initialize the view matrix to that view
     mat4.lookAt(vMatrix,eyePt,viewPt,up);
-    
+
     drawCube();
     drawSphere();
 }
@@ -481,13 +481,13 @@ function draw() {
  */
 function drawCube(){
     //console.log("function drawCube()");
-    
+
     gl.useProgram(shaderProgramSkybox);
     shaderProgram = shaderProgramSkybox;
-    
+
     mvPushMatrix();
     vec3.set(scaleVertex, 1.0, 1.0, 1.0);
-    vec3.scale(scaleVertex,scaleVertex,0.05);   
+    vec3.scale(scaleVertex,scaleVertex,0.05);
     mat4.scale(mvMatrix, mvMatrix, scaleVertex);
     mat4.multiply(mvMatrix,vMatrix,mvMatrix);
     setMatrixUniforms();
@@ -503,10 +503,10 @@ function drawCube(){
  */
 function drawSphere() {
     //console.log("function drawMesh()");
-    
+
     gl.useProgram(shaderProgramPhong);
     shaderProgram = shaderProgramPhong;
-   
+
     //ensure light is in proper direction
     mvPushMatrix();
     mat4.multiply(mvMatrix,vMatrix,mvMatrix);
@@ -521,13 +521,13 @@ function drawSphere() {
             //Now draw sphere
             mvPushMatrix();
             vec3.set(scaleVertex, 1.0, 1.0, 1.0);
-            vec3.scale(scaleVertex,scaleVertex,0.2);   
+            vec3.scale(scaleVertex,scaleVertex,0.2);
             mat4.scale(mvMatrix, mvMatrix, scaleVertex);
             mat4.translate(mvMatrix,mvMatrix,mySpheres[i].getPos());
             mat4.multiply(mvMatrix,vMatrix,mvMatrix);
             setMatrixUniforms();
             if (document.getElementById("random-color").checked) {
-                setMaterialUniforms(shininess,kAmbient,mySpheres[i].getColor(),kSpecular); 
+                setMaterialUniforms(shininess,kAmbient,mySpheres[i].getColor(),kSpecular);
             }
             else {
                 //Get material color
@@ -536,7 +536,7 @@ function drawSphere() {
                 var G = hexToG(colorVal)/255.0;
                 var B = hexToB(colorVal)/255.0;
                 console.log("Color set to ", R, G, B);
-                setMaterialUniforms(shininess,kAmbient,[R,G,B],kSpecular); 
+                setMaterialUniforms(shininess,kAmbient,[R,G,B],kSpecular);
 
             }
             mySpheres[i].draw();
@@ -552,7 +552,7 @@ var currentlyPressedKeys = {};
 function handleKeyDown(event) {
         //console.log("Key down ", event.key, " code ", event.code);
         currentlyPressedKeys[event.key] = true;
-    
+
         //Add or remove spheres
         if (currentlyPressedKeys["p"]) {
             console.log("Added particle!");
@@ -569,15 +569,18 @@ function handleKeyDown(event) {
             console.log("Removed particle!");
             event.preventDefault();
             numSpheres-=1;
-        } 
-    
-        //reset to 10 spheres
-        if (currentlyPressedKeys["t"]) {
-            console.log("Reset to 10 particles!");
-            event.preventDefault();
-            numSpheres = 10;
+            if (numSpheres < 0) {
+                numSpheres = 0;
+            }
         }
-    
+
+        //reset to 10 spheres
+        if (currentlyPressedKeys["c"]) {
+            console.log("Reset to 0 particles!");
+            event.preventDefault();
+            numSpheres = 0;
+        }
+
         //change drag
         if (currentlyPressedKeys["l"]) {
             console.log("Decreased drag!");
@@ -587,8 +590,8 @@ function handleKeyDown(event) {
             console.log("Increased drag!");
             event.preventDefault();
             drag-= 0.01;
-        } 
-    
+        }
+
         //reset to initial parameters
         if (currentlyPressedKeys["r"]) {
             console.log("Reset!");
@@ -618,16 +621,16 @@ function handleKeyUp(event) {
     gl.enable(gl.DEPTH_TEST);
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
-     
+
     //setup box
-    setupTextures(nullMap); 
+    setupTextures(nullMap);
     setupCube();
     setupShadersCube();
-     
+
     //setup spheres
     setupSphere();
     setupShadersPhong();
-     
+
     startTime = Date.now();
     tick();
 }
@@ -636,7 +639,7 @@ function handleKeyUp(event) {
 /**
   * Update any transformations
   */
-function animate() {    
+function animate() {
     //Update particles position and velocity
     elapsedTime = (Date.now() - startTime)/1000;
     for (var i = 0; i<numSpheres; i++) {
@@ -659,7 +662,7 @@ function animate() {
         mySpheres[i].setVelocity(newVelocity);
     }
     startTime = Date.now();
-    
+
     //update UI
     document.getElementById("sphereCount").value=numSpheres;
     document.getElementById("drag").value = drag;
